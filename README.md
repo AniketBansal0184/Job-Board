@@ -138,5 +138,4 @@ function JobList({ jobs }) {
 
 * Use `React.memo()` to memoize the `JobCard` component.
 * Ensure props (like `job`) are stable using `useCallback` or avoid anonymous inline functions unless necessary.
-
 ```
