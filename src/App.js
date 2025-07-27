@@ -14,7 +14,7 @@ function AppContent() {
     const fetchJobs = async () => {
       dispatch({ type: 'SET_LOADING' });
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}`);
+        const res = await axios.get(`https://jsonplaceholder.typicode.com/posts`);
         const mockJobs = res.data.slice(0, 20).map((item, idx) => ({
           id: item.id,
           title: item.title,
