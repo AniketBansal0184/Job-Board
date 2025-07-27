@@ -1,70 +1,142 @@
-# Getting Started with Create React App
+````markdown
+# 💼 Job Listing Board – React Take-Home Assignment
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A responsive React application where users can view, search, and save job listings from a mock API. This project demonstrates clean UI, optimized performance, global state management, and error/loading handling.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Features
 
-### `npm start`
+- 🔍 **Real-time Search** – Filter jobs by title or company (with debounce)
+- 📄 **Job Cards** – Display job title, company, and location
+- 💾 **Save Jobs** – Save any job to view later in the Saved Jobs section
+- 💬 **Global State** – Managed via React Context and Reducer
+- 📱 **Responsive UI** – Mobile and desktop friendly
+- 🛑 **Loading/Error States** – Smooth UX during data fetches
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🧪 Tech Stack
 
-### `npm test`
+- **React (Hooks)**
+- **Context API + useReducer**
+- **CSS (Grid + Flexbox)**
+- **Debounce (custom or lodash)**
+- **Mock API** (via static data or JSONPlaceholder)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🛠️ Setup Instructions
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone the repo or unzip the project folder.
+2. Navigate to the project directory:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```bash
+   cd job-board
+````
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Install dependencies:
 
-### `npm run eject`
+   ```bash
+   npm install
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. Start the development server:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```bash
+   npm start
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The app will run at: [http://localhost:3000](http://localhost:3000)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 📖 Written Answers
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 1. React Hooks vs Class Components
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+React Hooks allow functional components to manage state and lifecycle logic without needing classes. Hooks like `useState`, `useEffect`, and `useContext` simplify component logic and make code more reusable and cleaner than class-based lifecycle methods.
 
-### Code Splitting
+### 2. Optimizing Long List Rendering
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+To improve performance when rendering hundreds of job cards, I’d use virtualization with a library like `react-window` to only render visible items. Also, I’d memoize job components and avoid unnecessary re-renders using `React.memo`.
 
-### Analyzing the Bundle Size
+### 3. Managing Form State and Validation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+For small forms, I use `useState` along with simple validation logic. For larger or complex forms, I prefer using libraries like `Formik` or `React Hook Form` for better scalability, cleaner code, and built-in validation support.
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🛠️ Debugging Fix
 
-### Advanced Configuration
+### Original Problem:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```jsx
+function JobList({ jobs }) {
+  const [search, setSearch] = useState('');
+  return (
+    <div>
+      <input value={search} onChange={e => setSearch(e.target.value)} />
+      <ul>
+        {jobs.map(job => (
+          <li>{job.title} at {job.company}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
 
-### Deployment
+### a. Issues:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+* Missing `key` in list rendering
+* No filtering applied to the job list based on search input
 
-### `npm run build` fails to minify
+### b. Improved Code:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```jsx
+function JobList({ jobs }) {
+  const [search, setSearch] = useState('');
+
+  const filteredJobs = jobs.filter(job =>
+    job.title.toLowerCase().includes(search.toLowerCase()) ||
+    job.company.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div>
+      <input
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        placeholder="Search jobs..."
+      />
+      <ul>
+        {filteredJobs.map(job => (
+          <li key={job.id}>{job.title} at {job.company}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### Explanation:
+
+* Added a `key` to each job (`key={job.id}`) for React to track items efficiently.
+* Filtered the jobs list based on search input to make search functional.
+
+---
+
+## ⚙️ Performance Answers
+
+### a. Two techniques to improve job list rendering with 500+ items:
+
+1. **Virtualization** using `react-window` or `react-virtualized` to render only visible jobs.
+2. **Memoization** of individual job cards using `React.memo()` to prevent unnecessary re-renders.
+
+### b. Avoiding unnecessary re-renders in job cards:
+
+* Use `React.memo()` to memoize the `JobCard` component.
+* Ensure props (like `job`) are stable using `useCallback` or avoid anonymous inline functions unless necessary.
+
+```
